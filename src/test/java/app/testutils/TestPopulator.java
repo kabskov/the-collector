@@ -68,6 +68,13 @@ public class TestPopulator {
             testData.finds = finds;
 
             try {
+                //TRUNCATE TABLE tømmer tabellerne, der står efter.
+                //RESTART IDENTITY nulstiller autogenereret id.
+                //CASCADE tømmer alle tabeller, der har en fremmednøgle-reference til tabellerne, der står efter TRUNCATE.
+                //Jeg har en join-tabel mellem finds og categories, som ikke er med her. CASCADE løser det, fordi join-tabellen
+                //indeholder fremmednøgler til både finds og categories.
+                em.createNativeQuery("TRUNCATE TABLE users, categories, find_spots, finds RESTART IDENTITY CASCADE").executeUpdate();
+
                 em.persist(katarina);
                 em.persist(frederik);
 
