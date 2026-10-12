@@ -1,10 +1,7 @@
 package app.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -15,6 +12,7 @@ import java.util.Set;
 @Getter
 @ToString
 @NoArgsConstructor
+@RequiredArgsConstructor
 public class Find {
 
     @Id
@@ -27,21 +25,33 @@ public class Find {
     // når objektet gemmes i databasen.
 
     @Setter
+    @NonNull
     private LocalDate date;
 
     @Setter
+    @NonNull
     private String photoURL;
 
     @Setter
+    @NonNull
     private String note;
 
     @Setter
+    @NonNull
     @ManyToOne
     private User user;
 
+    @NonNull
     @ManyToMany
     private Set<Category> categories = new HashSet<>();
 
+    public void addCategory(Category category) {
+        if (category != null) {
+            this.categories.add(category);
+        }
+    }
+
+    @Setter
     @ManyToOne(cascade = CascadeType.PERSIST)
     private FindSpot findSpot;
 }
