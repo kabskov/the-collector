@@ -39,8 +39,18 @@ class FindDAOTest {
     void getAllFindsByUserId() {
         //Returnerer en liste med alle fund, der er gemt under det bruger-id, der søges på.
         Long userId = testData.users.getFirst().getId();
-        List<Find> userFinds = findDAO.getAllFindsByUserId(userId);
-        assertThat(userFinds, hasSize(4));
+        List<Find> finds = findDAO.getAllFindsByUserId(userId);
+
+        List<Long> actualFindIds = finds.stream().map(Find::getId).toList();
+        List<Long> expectedFindIds = List.of(
+                testData.finds.get(0).getId(),
+                testData.finds.get(1).getId(),
+                testData.finds.get(2).getId(),
+                testData.finds.get(3).getId()
+        );
+
+        assertThat(finds, hasSize(4));
+        assertThat(actualFindIds, containsInAnyOrder(expectedFindIds.toArray()));
     }
 
     @Test
@@ -53,7 +63,16 @@ class FindDAOTest {
         Long userId = testData.users.getFirst().getId();
         Long categoryId = testData.categories.getFirst().getId();
         List<Find> finds = findDAO.getUserFindsByCategory(userId, categoryId);
+
+        List<Long> actualFindIds = finds.stream().map(Find::getId).toList();
+        List<Long> expectedFindIds = testData.finds.stream()
+                .filter(find -> find.getCategories()
+                        .stream().anyMatch(category -> category.getId().equals(categoryId))
+                        && find.getUser().getId().equals(userId))
+                .map(Find::getId).toList();
+
         assertThat(finds, hasSize(2));
+        assertThat(actualFindIds, containsInAnyOrder(expectedFindIds.toArray()));
     }
 
     @Test
