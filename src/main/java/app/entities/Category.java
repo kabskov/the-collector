@@ -1,16 +1,14 @@
 package app.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
 @Table(name = "categories")
 @Getter
 @ToString
 @NoArgsConstructor
+@RequiredArgsConstructor
 public class Category {
 
     @Id
@@ -18,5 +16,6 @@ public class Category {
     private Long id;
 
     @Setter
+    @NonNull
     private String name;
 }

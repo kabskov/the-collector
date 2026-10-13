@@ -1,10 +1,7 @@
 package app.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -15,6 +12,7 @@ import java.util.Set;
 @Getter
 @ToString
 @NoArgsConstructor
+@RequiredArgsConstructor
 public class User {
 
     @Id
@@ -22,29 +20,33 @@ public class User {
     private Long id;
 
     @Setter
+    @NonNull
     private String name;
 
     @Setter
+    @NonNull
     private String email;
 
     @Setter
+    @NonNull
     private String password;
 
     @Setter
+    @NonNull
     private String role;
 
     @Setter
+    @NonNull
     private LocalDate createdOn;
 
-    @OneToMany(mappedBy = "users", cascade = CascadeType.REMOVE)
+    @NonNull
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Set<Find> finds = new HashSet<>();
 
     public void addFind(Find find) {
-        this.finds.add(find);
         if (find != null) {
+            this.finds.add(find);
             find.setUser(this);
         }
     }
 }
-
-
