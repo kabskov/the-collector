@@ -29,10 +29,10 @@ public class TestPopulator {
             Category pæneSten = new Category("Pæne sten");
 
             //FindSpot:
-            FindSpot helsingør = new FindSpot(56.0360, 12.6136);
-            FindSpot karrebæksminde = new FindSpot(55.1864, 11.6554);
-            FindSpot birkerød = new FindSpot(55.8372, 12.4280);
-            FindSpot roskilde = new FindSpot(55.6415, 12.0803);
+            FindSpot helsingør = new FindSpot(56.0360, 12.6136, "Helsingør, Danmark");
+            FindSpot karrebæksminde = new FindSpot(55.1864, 11.6554, "Karrebæksminde, Danmark");
+            FindSpot birkerød = new FindSpot(55.8372, 12.4280, "Birkerød, Danmark");
+            FindSpot roskilde = new FindSpot(55.6415, 12.0803, "Roskilde, Danmark");
 
             //Find:
             Find find1 = new Find(LocalDate.of(2026, 6, 20), "billede1", "Mit første fund.", katarina);
