@@ -20,4 +20,8 @@ public class FindSpot {
 
     @NonNull
     private double longitude;
+
+    @NonNull
+    @Column(length = 500)
+    private String name;
 }
