@@ -5,6 +5,7 @@ import app.daos.CategoryDAO;
 import app.daos.FindDAO;
 import app.daos.UserDAO;
 import app.dtos.FindDTO;
+import app.entities.Find;
 import app.testutils.TestData;
 import app.testutils.TestPopulator;
 import jakarta.persistence.EntityManagerFactory;
@@ -26,11 +27,13 @@ class FindServiceTest {
     //Opretter emf med/i test-container.
     private final EntityManagerFactory emf = HibernateTestConfig.getEntityManagerFactory();
 
+    private FindDAO findDAO;
     private FindService findService;
     private TestData testData;
 
     @BeforeEach
     void beforeEach() {
+        findDAO = new FindDAO(emf);
         findService = new FindService(emf);
         testData = TestPopulator.populate(emf);
     }
@@ -40,7 +43,7 @@ class FindServiceTest {
         emf.close();
     }
 
-    //Uden søgeord: findId er sat, findSpotName er null, og kategori-id’erne er med i svaret.
+    //Tester, at et fund uden fundsted kan registreres/gemmes.
     @Test
     void registerFindWithoutFindSpot() throws Exception {
         Long userId = testData.users.getFirst().getId();
@@ -50,5 +53,37 @@ class FindServiceTest {
         FindDTO returnedFindDTO = findService.registerFind(findDTO);
 
         assertThat(returnedFindDTO.getFindId(), notNullValue());
+        assertThat(returnedFindDTO.getFindSpotName(), nullValue());
+        assertThat(returnedFindDTO.getCategoryIds(), containsInAnyOrder(categoryIds.toArray()));
+    }
+
+    //Hent fundet direkte fra databasen via findDAO, og tjek, at det faktisk er gemt.
+    @Test
+    void registerFindWithoutFindSpotAndCheckDB() throws Exception {
+        String note = "En sten!";
+        Long userId = testData.users.get(1).getId();
+        List<Long> categoryIds = List.of(testData.categories.get(3).getId());
+        FindDTO findDTO = new FindDTO(null, LocalDate.of(2026, 10, 10), note, "billedeafstenen", userId, categoryIds, null, null);
+
+        FindDTO returnedFindDTO = findService.registerFind(findDTO);
+        Find find = findDAO.getById(returnedFindDTO.getFindId());
+
+        assertThat(find, notNullValue());
+        assertThat(find.getNote(), is(note));
+    }
+
+    //Med søgeord og kald til Nominatim (kun i denne ene test på grund af Nominatim-restriktioner).
+    @Test
+    void registerFindWithFindSpotFromNominatim() throws Exception {
+        Long userId = testData.users.getLast().getId();
+        List<Long> categoryIds = List.of(testData.categories.get(2).getId());
+        String findSpotKeyword = "Hillerød";
+        FindDTO findDTO = new FindDTO(null, LocalDate.of(2025, 8, 17), "En sten fra Hillerød", "billedeURL", userId, categoryIds, findSpotKeyword, null);
+
+        FindDTO returnedFindDTO = findService.registerFind(findDTO);
+        Find find = findDAO.getById(returnedFindDTO.getFindId());
+
+        assertThat(find.getFindSpot().getName(), containsStringIgnoringCase(findSpotKeyword));
+        assertThat(find.getId(), notNullValue());
     }
 }
