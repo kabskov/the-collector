@@ -1,49 +1,51 @@
 package app.services;
 
+import app.config.HibernateConfig;
+import app.daos.CategoryDAO;
+import app.daos.FindDAO;
+import app.daos.UserDAO;
 import app.dtos.FindDTO;
+import app.dtos.FindSpotDTO;
 import app.entities.Category;
 import app.entities.Find;
-import app.entities.FindSpot;
 import app.entities.User;
 import app.mappers.FindMapper;
+import app.mappers.FindSpotMapper;
+import jakarta.persistence.EntityManagerFactory;
 
-import java.util.Set;
+import java.util.List;
 
 public class FindService {
 
-    FindSpotService findSpotService = new FindSpotService();
+    private final FindSpotService findSpotService = new FindSpotService();
+    private final UserDAO userDAO;
+    private final CategoryDAO categoryDAO;
+    private final FindDAO findDAO;
 
-    //Hvilke oplysninger skal den modtage for at oprette et fund?
-    // Tænk på, hvad et Find består af, og hvad der skal til for at finde brugeren og stedet.
-    //Hvilke af dine eksisterende klasser skal den bruge, og i hvilken rækkefølge?
-    //Hvad skal der ske, hvis brugeren ikke har angivet et sted? Din model tillader jo et Find uden FindSpot.
+    public FindService(EntityManagerFactory emf) {
+        this.userDAO = new UserDAO(emf);
+        this.categoryDAO = new CategoryDAO(emf);
+        this.findDAO = new FindDAO(emf);
+    }
 
-    //For at oprette et fund skal jeg bruge:
-    // - Dato
-    // - Note
-    // - Billede (URL)
-    // - Bruger (klasse)
-    // - Fundsted er valgfrit (klasse)
-    // - Kategori (klasse)
-
-
- /*   public FindDTO registerFind(FindDTO findDTO) {
-        User user = userDAO.getUserById(findDTO.getUserId);
-        Set<Category> categories = categoryDAO.getCategoryById(findDTO.getCategories.getId);
+    public FindDTO registerFind(FindDTO findDTO) throws Exception {
+        User user = userDAO.getById(findDTO.getUserId());
+        List<Long> categoryIds = findDTO.getCategoryIds();
         Find find = FindMapper.convertToFind(findDTO, user);
-        for (Category category : categories) {
+        String findSpotKeyword = findDTO.getFindSpotKeyword();
+
+        for (Long id : categoryIds) {
+            Category category = categoryDAO.getById(id);
             find.addCategory(category);
         }
-        if (findDTO.getFindSpot != null) {
-            FindSpot findSpot = findSpotService.getFindSpotDetails(findDTO.getFindSpot);
-            find.setFindSpot(findSpot);
-        }
-        return FindMapper.convertToFindDTO(find);
-    }*/
 
-    //  public PoemDTO createPoem(PoemDTO poemDTO) {
-    //        Poem poem = PoemMapper.poemDTOToPoem(null, poemDTO);
-    //        poemDAO.create(poem);
-    //        return PoemMapper.poemToPoemDTO(poem);
-    //    }
+        if (findSpotKeyword != null && !findSpotKeyword.isBlank()) {
+            FindSpotDTO findSpotDTO = findSpotService.getFindSpotDetails(findSpotKeyword);
+            find.setFindSpot(FindSpotMapper.convertToFindSpot(findSpotDTO));
+        }
+
+        findDAO.create(find);
+
+        return FindMapper.convertToFindDTO(find);
+    }
 }
