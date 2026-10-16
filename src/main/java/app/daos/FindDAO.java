@@ -19,138 +19,142 @@ public class FindDAO implements IDAO<Find, Long> {
 
     //Alle mine fund (vist i en liste).
     public List<Find> getAllFindsByUserId(Long userId) {
-        EntityManager em = emf.createEntityManager();
+        try (EntityManager em = emf.createEntityManager()) {
 
-        TypedQuery<Find> query = em.createQuery("SELECT f FROM Find f WHERE f.user.id = :userId", Find.class);
-        query.setParameter("userId", userId);
-        List<Find> userFinds = query.getResultList();
-        em.close();
-
-        return userFinds;
+            TypedQuery<Find> query = em.createQuery("SELECT f FROM Find f WHERE f.user.id = :userId", Find.class);
+            query.setParameter("userId", userId);
+            return query.getResultList();
+        }
     }
 
     //Fund sorteret efter dato (stigende/faldende).
     public List<Find> getUserFindsSortedByDate(Long userId, boolean ascending) {
-        EntityManager em = emf.createEntityManager();
+        try (EntityManager em = emf.createEntityManager()) {
 
-        //Hvis metoden kaldes med "true", sættes variablen til ASC, hvis den kaldes med "false", sættes den til DESC.
-        String direction = ascending ? "ASC" : "DESC";
-        String jpql = "SELECT f FROM Find f WHERE f.user.id = :userId ORDER BY f.date " + direction;
-        TypedQuery<Find> query = em.createQuery(jpql, Find.class);
-        query.setParameter("userId", userId);
-        List<Find> userFindsSortedByDate = query.getResultList();
-        em.close();
-
-        return userFindsSortedByDate;
+            //Hvis metoden kaldes med "true", sættes variablen til ASC, hvis den kaldes med "false", sættes den til DESC.
+            String direction = ascending ? "ASC" : "DESC";
+            TypedQuery<Find> query = em.createQuery("SELECT f FROM Find f WHERE f.user.id = :userId ORDER BY f.date " + direction, Find.class);
+            query.setParameter("userId", userId);
+            return query.getResultList();
+        }
     }
 
     //Alle sten i en kategori (søg på kategori).
     public List<Find> getUserFindsByCategory(Long userId, Long categoryId) {
-        EntityManager em = emf.createEntityManager();
+        try (EntityManager em = emf.createEntityManager()) {
 
-        String jpql = "SELECT f FROM Find f JOIN f.categories c WHERE f.user.id = :userId AND c.id = :categoryId";
-        TypedQuery<Find> query = em.createQuery(jpql, Find.class);
-        query.setParameter("userId", userId);
-        query.setParameter("categoryId", categoryId);
-        List<Find> userFindsByCategory = query.getResultList();
-        em.close();
-
-        return userFindsByCategory;
+            TypedQuery<Find> query = em.createQuery("SELECT f FROM Find f JOIN f.categories c WHERE f.user.id = :userId AND c.id = :categoryId", Find.class);
+            query.setParameter("userId", userId);
+            query.setParameter("categoryId", categoryId);
+            return query.getResultList();
+        }
     }
 
     //Alle fund fra et fundsted (søg på fundsted).
     public List<Find> getUserFindsByFindSpot(Long userId, Long findSpotId) {
-        EntityManager em = emf.createEntityManager();
+        try (EntityManager em = emf.createEntityManager()) {
 
-        TypedQuery<Find> query = em.createQuery("SELECT f FROM Find f WHERE f.user.id = :userId AND f.findSpot.id = :findSpotId", Find.class);
-        query.setParameter("userId", userId);
-        query.setParameter("findSpotId", findSpotId);
-        List<Find> userFindsByFindSpot = query.getResultList();
-        em.close();
-
-        return userFindsByFindSpot;
+            TypedQuery<Find> query = em.createQuery("SELECT f FROM Find f WHERE f.user.id = :userId AND f.findSpot.id = :findSpotId", Find.class);
+            query.setParameter("userId", userId);
+            query.setParameter("findSpotId", findSpotId);
+            return query.getResultList();
+        }
     }
 
     //Alle fund fra en bestemt dato (søg på dato).
     public List<Find> getUserFindsByDate(Long userId, LocalDate date) {
-        EntityManager em = emf.createEntityManager();
+        try (EntityManager em = emf.createEntityManager()) {
 
-        TypedQuery<Find> query = em.createQuery("SELECT f FROM Find f WHERE f.user.id = :userId AND f.date = :date", Find.class);
-        query.setParameter("userId", userId);
-        query.setParameter("date", date);
-        List<Find> userFindsByDate = query.getResultList();
-        em.close();
-
-        return userFindsByDate;
+            TypedQuery<Find> query = em.createQuery("SELECT f FROM Find f WHERE f.user.id = :userId AND f.date = :date", Find.class);
+            query.setParameter("userId", userId);
+            query.setParameter("date", date);
+            return query.getResultList();
+        }
     }
 
     @Override
     public void create(Find find) {
-        EntityManager em = emf.createEntityManager();
-
-        em.getTransaction().begin();
-        em.persist(find);
-        em.getTransaction().commit();
-        em.close();
+        try (EntityManager em = emf.createEntityManager()) {
+            try {
+                em.getTransaction().begin();
+                em.persist(find);
+                em.getTransaction().commit();
+            } catch (Exception e) {
+                if (em.getTransaction().isActive()) {
+                    em.getTransaction().rollback();
+                }
+                throw new ApiException(500, "Could not create find", e);
+            }
+        }
     }
 
     @Override
     public List<Find> getAll() {
-        EntityManager em = emf.createEntityManager();
-
-        TypedQuery<Find> query = em.createQuery("SELECT f FROM Find f", Find.class);
-        List<Find> allFinds = query.getResultList();
-        em.close();
-
-        return allFinds;
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.createQuery("SELECT f FROM Find f", Find.class).getResultList();
+        }
     }
 
     @Override
     public Find getById(Long id) {
-        EntityManager em = emf.createEntityManager();
-
-        //TODO skal nok ikke begynde transaktion.
-        em.getTransaction().begin();
-        Find find = em.find(Find.class, id);
-        em.close();
-
-        return find;
+        try (EntityManager em = emf.createEntityManager()) {
+            Find find = em.find(Find.class, id);
+            if (find == null) {
+                throw new ApiException(404, "Find with id " + id + " not found");
+            }
+            return find;
+        }
     }
 
     @Override
     public void update(Find find) {
-        EntityManager em = emf.createEntityManager();
-
-        em.getTransaction().begin();
-
-        Find existingFind = em.find(Find.class, find.getId());
-        if (existingFind == null) {
-            em.getTransaction().rollback();
-            em.close();
-            throw new ApiException(404, "Find not found.");
+        try (EntityManager em = emf.createEntityManager()) {
+            try {
+                em.getTransaction().begin();
+                Find existingFind = em.find(Find.class, find.getId());
+                if (existingFind == null) {
+                    throw new ApiException(404, "Find with id " + find.getId() + " not found");
+                }
+                existingFind.setDate(find.getDate());
+                existingFind.setPhotoURL(find.getPhotoURL());
+                existingFind.setNote(find.getNote());
+                em.getTransaction().commit();
+            } catch (ApiException e) {
+                if (em.getTransaction().isActive()) {
+                    em.getTransaction().rollback();
+                }
+                throw e;
+            } catch (Exception e) {
+                if (em.getTransaction().isActive()) {
+                    em.getTransaction().rollback();
+                }
+                throw new ApiException(500, "Could not update find", e);
+            }
         }
-
-        if (find.getDate() != null) {existingFind.setDate(find.getDate()); }
-        if (find.getPhotoURL() != null) {existingFind.setPhotoURL(find.getPhotoURL()); }
-        if (find.getNote() != null) {existingFind.setNote(find.getNote()); }
-
-        em.getTransaction().commit();
-        em.close();
     }
 
     @Override
     public void delete(Long id) {
-        EntityManager em = emf.createEntityManager();
-
-        Find existingFind = em.find(Find.class, id);
-        if (existingFind == null) {
-            em.getTransaction().rollback();
-            em.close();
-            throw new ApiException(404, "Find not found");
+        try (EntityManager em = emf.createEntityManager()) {
+            try {
+                em.getTransaction().begin();
+                Find existingFind = em.find(Find.class, id);
+                if (existingFind == null) {
+                    throw new ApiException(404, "Find with id " + id + " not found");
+                }
+                em.remove(existingFind);
+                em.getTransaction().commit();
+            } catch (ApiException e) {
+                if (em.getTransaction().isActive()) {
+                    em.getTransaction().rollback();
+                }
+                throw e;
+            } catch (Exception e) {
+                if (em.getTransaction().isActive()) {
+                    em.getTransaction().rollback();
+                }
+                throw new ApiException(500, "Could not delete find", e);
+            }
         }
-
-        em.remove(existingFind);
-        em.getTransaction().commit();
-        em.close();
     }
 }
