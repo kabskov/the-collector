@@ -45,7 +45,7 @@ class FindServiceTest {
 
     //Tester, at et fund uden fundsted kan registreres/gemmes.
     @Test
-    void registerFindWithoutFindSpot() throws Exception {
+    void registerFindWithoutFindSpot() {
         Long userId = testData.users.getFirst().getId();
         List<Long> categoryIds = List.of(testData.categories.get(0).getId(), testData.categories.get(2).getId());
         FindDTO findDTO = new FindDTO(null, LocalDate.of(2026, 10, 4), "En ny sten", "billedeafsten", userId, categoryIds, null, null);
@@ -59,7 +59,7 @@ class FindServiceTest {
 
     //Hent fundet direkte fra databasen via findDAO, og tjek, at det faktisk er gemt.
     @Test
-    void registerFindWithoutFindSpotAndCheckDB() throws Exception {
+    void registerFindWithoutFindSpotAndCheckDB() {
         String note = "En sten!";
         Long userId = testData.users.get(1).getId();
         List<Long> categoryIds = List.of(testData.categories.get(3).getId());
@@ -74,7 +74,7 @@ class FindServiceTest {
 
     //Med søgeord og kald til Nominatim (kun i denne ene test på grund af Nominatim-restriktioner).
     @Test
-    void registerFindWithFindSpotFromNominatim() throws Exception {
+    void registerFindWithFindSpotFromNominatim() {
         Long userId = testData.users.getLast().getId();
         List<Long> categoryIds = List.of(testData.categories.get(2).getId());
         String findSpotKeyword = "Hillerød";
