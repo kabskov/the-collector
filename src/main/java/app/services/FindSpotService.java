@@ -1,6 +1,7 @@
 package app.services;
 
 import app.dtos.FindSpotDTO;
+import app.exceptions.ApiException;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -9,7 +10,7 @@ public class FindSpotService {
 
     private final APIService apiService = new APIService();
 
-    public FindSpotDTO getFindSpotDetails(String keyword) throws Exception {
+    public FindSpotDTO getFindSpotDetails(String keyword) {
         String encodedKeyword = URLEncoder.encode(keyword, StandardCharsets.UTF_8);
         String url = "https://nominatim.openstreetmap.org/search?q=" + encodedKeyword + "&format=json";
 
@@ -17,14 +18,14 @@ public class FindSpotService {
             Thread.sleep(1000); //1 sec. delay because nominatim only allows 1 call/sec.
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw e;
+            throw new ApiException(500, "Interrupted while waiting to call Nominatim", e);
         }
 
-        FindSpotDTO[] findSpotDTOArray = apiService.fetchAndConvert(url, FindSpotDTO[].class);
-        if (findSpotDTOArray.length < 1) {
-            throw new Exception("Could not find a location to match the keyword");
+        FindSpotDTO[] results = apiService.fetchAndConvert(url, FindSpotDTO[].class);
+        if (results.length == 0) {
+            throw new ApiException(404, "No location found for keyword: " + keyword);
         }
 
-        return findSpotDTOArray[0];
+        return results[0];
     }
 }
