@@ -1,5 +1,6 @@
 package app.services;
 
+import app.exceptions.ApiException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -27,11 +28,16 @@ public class APIService {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() != 200) {
-                throw new RuntimeException("GET request failed. Status code: " + response.statusCode());
+                throw new ApiException(502, "External API returned status " + response.statusCode());
             }
             return response.body();
+        } catch (ApiException e) {
+            throw e;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new ApiException(500, "Request was interrupted", e);
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage(), e);
+            throw new ApiException(502, "Could not reach external API", e);
         }
     }
 
@@ -39,7 +45,7 @@ public class APIService {
         try {
             return objectMapper.readValue(json, tClass);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new ApiException(502, "Could not read response from external API", e);
         }
     }
 
