@@ -1,8 +1,10 @@
 package app.exceptions;
 
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Getter
 public class ApiException extends RuntimeException {
     private int code;
     private static final Logger logger = LoggerFactory.getLogger(ApiException.class);
@@ -12,7 +14,10 @@ public class ApiException extends RuntimeException {
         this.code = code;
         logger.error("ApiException (code={}): {}", code, msg);
     }
-    public int getCode(){
-        return code;
+
+    public ApiException(int code, String msg, Throwable cause) {
+        super(msg, cause);
+        this.code = code;
+        logger.error("ApiException (code={}): {}", code, msg, cause);
     }
 }

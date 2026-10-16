@@ -1,6 +1,7 @@
 package app.daos;
 
 import app.entities.User;
+import app.exceptions.ApiException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
@@ -26,13 +27,13 @@ public class UserDAO implements IDAO<User, Long> {
 
     @Override
     public User getById(Long id) {
-        EntityManager em = emf.createEntityManager();
-
-        em.getTransaction().begin();
-        User user = em.find(User.class, id);
-        em.close();
-
-        return user;
+        try (EntityManager em = emf.createEntityManager()) {
+            User user = em.find(User.class, id);
+            if (user == null) {
+                throw new ApiException(404, "User with id " + id + " not found");
+            }
+            return user;
+        }
     }
 
     @Override

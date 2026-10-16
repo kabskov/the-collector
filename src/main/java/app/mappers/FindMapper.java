@@ -10,7 +10,8 @@ import java.util.List;
 public class FindMapper {
 
     public static Find convertToFind(FindDTO findDTO, User user) {
-        return new Find(findDTO.getDate(), findDTO.getPhotoURL(), findDTO.getNote(), user);
+        String note = findDTO.getNote() != null ? findDTO.getNote() : "";
+        return new Find(findDTO.getDate(), findDTO.getPhotoURL(), note, user);
     }
 
     public static FindDTO convertToFindDTO(Find find) {

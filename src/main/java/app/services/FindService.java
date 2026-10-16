@@ -9,6 +9,7 @@ import app.dtos.FindSpotDTO;
 import app.entities.Category;
 import app.entities.Find;
 import app.entities.User;
+import app.exceptions.ApiException;
 import app.mappers.FindMapper;
 import app.mappers.FindSpotMapper;
 import jakarta.persistence.EntityManagerFactory;
@@ -28,9 +29,21 @@ public class FindService {
         this.findDAO = new FindDAO(emf);
     }
 
-    public FindDTO registerFind(FindDTO findDTO) throws Exception {
-        User user = userDAO.getById(findDTO.getUserId());
+    public FindDTO registerFind(FindDTO findDTO) {
         List<Long> categoryIds = findDTO.getCategoryIds();
+        if (categoryIds == null || categoryIds.isEmpty()) {
+            throw new ApiException(400, "A find must have at least one category");
+        }
+        if (findDTO.getUserId() == null) {
+            throw new ApiException(400, "User id is required");
+        }
+        if (findDTO.getDate() == null) {
+            throw new ApiException(400, "Date is required");
+        }
+        if (findDTO.getPhotoURL() == null || findDTO.getPhotoURL().isBlank()) {
+            throw new ApiException(400, "Photo URL is required");
+        }
+        User user = userDAO.getById(findDTO.getUserId());
         Find find = FindMapper.convertToFind(findDTO, user);
         String findSpotKeyword = findDTO.getFindSpotKeyword();
 
@@ -45,7 +58,6 @@ public class FindService {
         }
 
         findDAO.create(find);
-
         return FindMapper.convertToFindDTO(find);
     }
 }
