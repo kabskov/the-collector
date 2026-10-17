@@ -1,6 +1,5 @@
 package app.services;
 
-import app.config.HibernateConfig;
 import app.daos.CategoryDAO;
 import app.daos.FindDAO;
 import app.daos.UserDAO;
@@ -14,6 +13,7 @@ import app.mappers.FindMapper;
 import app.mappers.FindSpotMapper;
 import jakarta.persistence.EntityManagerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FindService {
@@ -59,5 +59,23 @@ public class FindService {
 
         findDAO.create(find);
         return FindMapper.convertToFindDTO(find);
+    }
+
+    public FindDTO getFindByIdAndUserId(Long userId, Long findId) {
+        FindDTO findDTO = FindMapper.convertToFindDTO(findDAO.getById(findId));
+        if (!findDTO.getUserId().equals(userId)) {
+            throw new ApiException(404, "Find with id " + findId + " not found");
+        }
+        return findDTO;
+    }
+
+    public List<FindDTO> getAllFindsByUserId(Long userId) {
+        userDAO.getById(userId);
+        List<Find> finds = findDAO.getAllFindsByUserId(userId);
+        List<FindDTO> findDTOS = new ArrayList<>();
+        for (Find find : finds) {
+            findDTOS.add(FindMapper.convertToFindDTO(find));
+        }
+        return findDTOS;
     }
 }
