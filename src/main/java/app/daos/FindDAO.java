@@ -4,6 +4,7 @@ import app.entities.Find;
 import app.exceptions.ApiException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 
 import java.time.LocalDate;
@@ -21,7 +22,7 @@ public class FindDAO implements IDAO<Find, Long> {
     public List<Find> getAllFindsByUserId(Long userId) {
         try (EntityManager em = emf.createEntityManager()) {
 
-            TypedQuery<Find> query = em.createQuery("SELECT f FROM Find f WHERE f.user.id = :userId", Find.class);
+            TypedQuery<Find> query = em.createQuery("SELECT f FROM Find f LEFT JOIN FETCH f.categories WHERE f.user.id = :userId", Find.class);
             query.setParameter("userId", userId);
             return query.getResultList();
         }
@@ -98,11 +99,13 @@ public class FindDAO implements IDAO<Find, Long> {
     @Override
     public Find getById(Long id) {
         try (EntityManager em = emf.createEntityManager()) {
-            Find find = em.find(Find.class, id);
-            if (find == null) {
+            TypedQuery<Find> query = em.createQuery("SELECT f FROM Find f LEFT JOIN FETCH f.categories WHERE f.id = :id", Find.class);
+            query.setParameter("id", id);
+            try {
+                return query.getSingleResult();
+            } catch (NoResultException e) {
                 throw new ApiException(404, "Find with id " + id + " not found");
             }
-            return find;
         }
     }
 
