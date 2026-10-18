@@ -21,3 +21,16 @@ Content-Type: application/json
 
 ### GET request to all categories
 GET http://localhost:7070/api/v1/categories
+
+### GET request to user by id
+GET http://localhost:7070/api/v1/users/2
+
+### POST request to create new user
+POST http://localhost:7070/api/v1/users
+Content-Type: application/json
+
+{
+  "name": "Lars Test",
+  "email": "larstest@email.com",
+  "password": "larstester"
+}
