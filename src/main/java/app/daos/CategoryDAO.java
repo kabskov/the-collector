@@ -22,7 +22,9 @@ public class CategoryDAO implements IDAO<Category, Long> {
 
     @Override
     public List<Category> getAll() {
-        return List.of();
+        try (EntityManager em = emf.createEntityManager()) {
+         return em.createQuery("SELECT c FROM Category c", Category.class).getResultList();
+        }
     }
 
     @Override
