@@ -2,7 +2,9 @@ package app.routes;
 
 import app.controllers.CategoryController;
 import app.controllers.FindController;
+import app.controllers.UserController;
 import app.exceptions.ApiException;
+import app.services.UserService;
 import io.javalin.Javalin;
 import jakarta.persistence.EntityManagerFactory;
 
@@ -11,15 +13,18 @@ import java.util.Map;
 public class Routes {
     private final FindController findController;
     private final CategoryController categoryController;
+    private final UserController userController;
 
     public Routes(EntityManagerFactory emf) {
         this.findController = new FindController(emf);
         this.categoryController = new CategoryController(emf);
+        this.userController = new UserController(emf);
     }
 
     public void getRoutes(Javalin app) {
         findController.addRoutes(app);
         categoryController.addRoutes(app);
+        userController.addRoutes(app);
 
         app.exception(ApiException.class, (e, ctx) -> {
             ctx.status(e.getCode());

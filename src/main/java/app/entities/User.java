@@ -25,6 +25,7 @@ public class User {
 
     @Setter
     @NonNull
+    @Column(unique = true)
     private String email;
 
     @Setter
