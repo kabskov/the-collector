@@ -18,6 +18,8 @@ public class FindController {
         createFind(app);
         getFindByIdAndUserId(app);
         getAllFindsByUserId(app);
+        updateFind(app);
+        deleteFind(app);
     }
 
     private void createFind(Javalin app) {
@@ -41,6 +43,30 @@ public class FindController {
         app.get("/api/v1/users/{userId}/finds", ctx -> {
             Long userId = Long.parseLong(ctx.pathParam("userId"));
             ctx.json(findService.getAllFindsByUserId(userId));
+        });
+    }
+
+    private void updateFind(Javalin app) {
+        app.patch("/api/v1/users/{userId}/finds/{findId}", ctx -> {
+            Long userId = Long.parseLong(ctx.pathParam("userId"));
+            Long findId = Long.parseLong(ctx.pathParam("findId"));
+
+            FindDTO findDTO = ctx.bodyAsClass(FindDTO.class);
+            FindDTO updatedFind = findService.updateFind(userId, findId, findDTO);
+
+            ctx.json(updatedFind);
+            ctx.status(HttpStatus.OK);
+        });
+    }
+
+    private void deleteFind(Javalin app) {
+        app.delete("/api/v1/users/{userId}/finds/{findId}", ctx -> {
+            Long userId = Long.parseLong(ctx.pathParam("userId"));
+            Long findId = Long.parseLong(ctx.pathParam("findId"));
+
+            findService.deleteFind(userId, findId);
+
+            ctx.status(HttpStatus.NO_CONTENT);
         });
     }
 }
