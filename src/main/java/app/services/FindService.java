@@ -30,23 +30,15 @@ public class FindService {
     }
 
     public FindDTO registerFind(FindDTO findDTO) {
-        List<Long> categoryIds = findDTO.getCategoryIds();
-        if (categoryIds == null || categoryIds.isEmpty()) {
-            throw new ApiException(400, "A find must have at least one category");
-        }
         if (findDTO.getUserId() == null) {
             throw new ApiException(400, "User id is required");
         }
-        if (findDTO.getDate() == null) {
-            throw new ApiException(400, "Date is required");
-        }
-        if (findDTO.getPhotoURL() == null || findDTO.getPhotoURL().isBlank()) {
-            throw new ApiException(400, "Photo URL is required");
-        }
+        validate(findDTO);
         User user = userDAO.getById(findDTO.getUserId());
         Find find = FindMapper.convertToFind(findDTO, user);
         String findSpotKeyword = findDTO.getFindSpotKeyword();
 
+        List<Long> categoryIds = findDTO.getCategoryIds();
         for (Long id : categoryIds) {
             Category category = categoryDAO.getById(id);
             find.addCategory(category);
@@ -77,5 +69,52 @@ public class FindService {
             findDTOS.add(FindMapper.convertToFindDTO(find));
         }
         return findDTOS;
+    }
+
+    public FindDTO updateFind(Long userId, Long findId, FindDTO findDTO) {
+        //Tjekker, om fundet tilhører brugeren. Hvis ikke -> 404.
+        getFindByIdAndUserId(userId, findId);
+        Find find = findDAO.getById(findId);
+        if (findDTO.getDate() != null) {
+            find.setDate(findDTO.getDate());
+        }
+        if (findDTO.getPhotoURL() != null) {
+            find.setPhotoURL(findDTO.getPhotoURL());
+        }
+        if (findDTO.getNote() != null) {
+            find.setNote(findDTO.getNote());
+        }
+        if (findDTO.getCategoryIds() != null) {
+            if (findDTO.getCategoryIds().isEmpty()) {
+                throw new ApiException(400, "A find must have at least one category");
+            }
+            find.getCategories().clear();
+            List<Long> categoryIds = findDTO.getCategoryIds();
+            for (Long id : categoryIds) {
+                Category category = categoryDAO.getById(id);
+                find.addCategory(category);
+            }
+        }
+
+        findDAO.update(find);
+        return getFindByIdAndUserId(userId, findId);
+    }
+
+    public void deleteFind(Long userId, Long findId) {
+        getFindByIdAndUserId(userId, findId);
+        findDAO.delete(findId);
+    }
+
+    private void validate(FindDTO findDTO) {
+        List<Long> categoryIds = findDTO.getCategoryIds();
+        if (categoryIds == null || categoryIds.isEmpty()) {
+            throw new ApiException(400, "A find must have at least one category");
+        }
+        if (findDTO.getDate() == null) {
+            throw new ApiException(400, "Date is required");
+        }
+        if (findDTO.getPhotoURL() == null || findDTO.getPhotoURL().isBlank()) {
+            throw new ApiException(400, "Photo URL is required");
+        }
     }
 }
