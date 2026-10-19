@@ -5,19 +5,30 @@ GET http://localhost:7070/
 GET http://localhost:7070/api/v1/users/3/finds/2
 
 ### GET request to all finds by user id
-GET http://localhost:7070/api/v1/users/5/finds
+GET http://localhost:7070/api/v1/users/1/finds
 
 ### POST request to create new find
 POST http://localhost:7070/api/v1/finds
 Content-Type: application/json
 
 {
-  "date": "2026-10-17",
+  "date": "2026-10-19",
   "photoURL": "testbillede1",
-  "note": "Tester igen",
-  "userId": 2,
-  "categoryIds": [2, 3]
+  "note": "Test at fund, der skal slettes.",
+  "userId": 1,
+  "categoryIds": [1, 3]
 }
+
+### PATCH request to update find
+PATCH http://localhost:7070/api/v1/users/1/finds/1
+Content-Type: application/json
+
+{
+  "categoryIds": []
+}
+
+### DELETE request to delete find
+DELETE http://localhost:7070/api/v1/users/1/finds/3
 
 ### GET request to all categories
 GET http://localhost:7070/api/v1/categories
