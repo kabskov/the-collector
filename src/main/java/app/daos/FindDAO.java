@@ -1,5 +1,6 @@
 package app.daos;
 
+import app.entities.Category;
 import app.entities.Find;
 import app.exceptions.ApiException;
 import jakarta.persistence.EntityManager;
@@ -121,6 +122,10 @@ public class FindDAO implements IDAO<Find, Long> {
                 existingFind.setDate(find.getDate());
                 existingFind.setPhotoURL(find.getPhotoURL());
                 existingFind.setNote(find.getNote());
+                existingFind.getCategories().clear();
+                for (Category category : find.getCategories()) {
+                    existingFind.addCategory(category);
+                }
                 em.getTransaction().commit();
             } catch (ApiException e) {
                 if (em.getTransaction().isActive()) {
