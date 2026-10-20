@@ -2,6 +2,7 @@ package app.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -12,7 +13,6 @@ import java.util.Set;
 @Getter
 @ToString
 @NoArgsConstructor
-@RequiredArgsConstructor
 public class User {
 
     @Id
@@ -20,27 +20,25 @@ public class User {
     private Long id;
 
     @Setter
-    @NonNull
+    @Column(nullable = false)
     private String name;
 
     @Setter
-    @NonNull
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @Setter
-    @NonNull
+    @Column(nullable = false)
     private String password;
 
     @Setter
-    @NonNull
-    private String role;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Setter
-    @NonNull
+    @Column(nullable = false)
     private LocalDate createdOn;
 
-    @NonNull
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Set<Find> finds = new HashSet<>();
 
@@ -49,5 +47,17 @@ public class User {
             this.finds.add(find);
             find.setUser(this);
         }
+    }
+
+    public User(String name, String email, String password, Role role, LocalDate createdOn) {
+        this.name = name;
+        this.email = email;
+        this.password = BCrypt.hashpw(password, BCrypt.gensalt());
+        this.role = role;
+        this.createdOn = createdOn;
+    }
+
+    public boolean verifyPassword(String password) {
+        return BCrypt.checkpw(password, this.password);
     }
 }
