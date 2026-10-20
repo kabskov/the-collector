@@ -1,15 +1,36 @@
 package app.config;
 
+import app.controllers.SecurityController;
+import app.exceptions.ApiException;
 import app.routes.Routes;
 import io.javalin.Javalin;
+import io.javalin.config.JavalinConfig;
 import jakarta.persistence.EntityManagerFactory;
+
+import java.util.Map;
 
 public class ApplicationConfig {
 
+    private static Routes routes;
+
+    public static void configuration(JavalinConfig config) {
+        config.router.contextPath = "/api/v1"; // Alle routes starter med dette.
+        config.http.defaultContentType = "application/json";
+        config.router.apiBuilder(routes.getRoutes());
+    }
+
     public static Javalin startServer(int port, EntityManagerFactory emf) {
-        Javalin app = Javalin.create();
-        Routes routes = new Routes(emf);
-        routes.getRoutes(app);
+        routes = new Routes(emf);
+        SecurityController securityController = new SecurityController(emf);
+
+        Javalin app = Javalin.create(ApplicationConfig::configuration);
+        app.beforeMatched(securityController::authenticate);
+        app.beforeMatched(securityController::authorize);
+        app.exception(ApiException.class, (e, ctx) -> {
+            ctx.status(e.getCode());
+            ctx.json(Map.of("status", e.getCode(), "msg", e.getMessage()));
+        });
+
         app.start(port);
         return app;
     }
