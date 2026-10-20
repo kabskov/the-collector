@@ -2,7 +2,7 @@ package app.controllers;
 
 import app.dtos.UserDTO;
 import app.services.UserService;
-import io.javalin.Javalin;
+import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import jakarta.persistence.EntityManagerFactory;
 
@@ -14,24 +14,16 @@ public class UserController {
         this.userService = new UserService(emf);
     }
 
-    public void addRoutes(Javalin app) {
-        createUser(app);
-        getUserById(app);
-    }
-
-    private void createUser(Javalin app) {
-        app.post("/api/v1/users", ctx -> {
+    public void createUser(Context ctx) {
             UserDTO userDTO = ctx.bodyAsClass(UserDTO.class);
             UserDTO created = userService.createUser(userDTO);
             ctx.json(created);
             ctx.status(HttpStatus.CREATED);
-        });
     }
 
-    private void getUserById(Javalin app) {
-        app.get("/api/v1/users/{id}", ctx -> {
-            Long id = Long.parseLong(ctx.pathParam("id"));
-            ctx.json(userService.getUserById(id));
-        });
+    public void getUserById(Context ctx) {
+            Long userId = Long.parseLong(ctx.pathParam("userId"));
+            SecurityController.requireOwner(ctx, userId);
+            ctx.json(userService.getUserById(userId));
     }
 }
