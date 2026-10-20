@@ -1,6 +1,7 @@
 package app.services;
 
 import app.daos.UserDAO;
+import app.dtos.LoginDTO;
 import app.dtos.UserDTO;
 import app.entities.User;
 import app.exceptions.ApiException;
@@ -34,6 +35,21 @@ public class UserService {
 
         User user = UserMapper.convertToUser(userDTO);
         userDAO.create(user);
+        return UserMapper.convertToUserDTO(user);
+    }
+
+    public UserDTO login(LoginDTO loginDTO) {
+        if (loginDTO.getEmail() == null || loginDTO.getEmail().isBlank()) {
+            throw new ApiException(400, "Email is required");
+        }
+        if (loginDTO.getPassword() == null || loginDTO.getPassword().isBlank()) {
+            throw new ApiException(400, "Password is required");
+        }
+        User user = userDAO.getByEmail(loginDTO.getEmail());
+        if (user == null || !user.verifyPassword(loginDTO.getPassword())) {
+            throw new ApiException(401, "Wrong email or password");
+        }
+
         return UserMapper.convertToUserDTO(user);
     }
 
