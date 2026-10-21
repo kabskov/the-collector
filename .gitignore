@@ -210,3 +210,5 @@ $RECYCLE.BIN/
 *.lnk
 
 .idea/vcs.xml
+.env
+http-client.private.env.json
