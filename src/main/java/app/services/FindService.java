@@ -29,12 +29,9 @@ public class FindService {
         this.findDAO = new FindDAO(emf);
     }
 
-    public FindDTO registerFind(FindDTO findDTO) {
-        if (findDTO.getUserId() == null) {
-            throw new ApiException(400, "User id is required");
-        }
+    public FindDTO registerFind(Long userId, FindDTO findDTO) {
         validate(findDTO);
-        User user = userDAO.getById(findDTO.getUserId());
+        User user = userDAO.getById(userId);
         Find find = FindMapper.convertToFind(findDTO, user);
         String findSpotKeyword = findDTO.getFindSpotKeyword();
 

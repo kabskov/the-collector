@@ -1,7 +1,7 @@
 package app.controllers;
 
 import app.services.CategoryService;
-import io.javalin.Javalin;
+import io.javalin.http.Context;
 import jakarta.persistence.EntityManagerFactory;
 
 public class CategoryController {
@@ -12,11 +12,7 @@ public class CategoryController {
         this.categoryService = new CategoryService(emf);
     }
 
-    public void addRoutes(Javalin app) {
-        getAllCategories(app);
-    }
-
-    private void getAllCategories(Javalin app) {
-        app.get("/api/v1/categories", ctx -> ctx.json(categoryService.getAllCategories()));
+    public void getAllCategories(Context ctx) {
+        ctx.json(categoryService.getAllCategories());
     }
 }

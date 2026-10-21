@@ -2,46 +2,62 @@
 GET http://localhost:7070/
 
 ### GET request to find by id
-GET http://localhost:7070/api/v1/users/3/finds/2
+GET http://localhost:7070/api/v1/users/3/finds/4
+Authorization: Bearer {{token}}
 
 ### GET request to all finds by user id
-GET http://localhost:7070/api/v1/users/1/finds
+GET http://localhost:7070/api/v1/users/3/finds
+Authorization: Bearer {{token}}
 
 ### POST request to create new find
 POST http://localhost:7070/api/v1/finds
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "date": "2026-10-19",
-  "photoURL": "testbillede1",
-  "note": "Test at fund, der skal slettes.",
-  "userId": 1,
-  "categoryIds": [1, 3]
+  "date": "2026-10-20",
+  "photoURL": "testbillede27",
+  "note": "En flot sten.",
+  "categoryIds": [4]
 }
 
 ### PATCH request to update find
-PATCH http://localhost:7070/api/v1/users/1/finds/1
+PATCH http://localhost:7070/api/v1/users/3/finds/4
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "categoryIds": []
+  "note": "DET HER ER EN FLOT STEN!"
 }
 
 ### DELETE request to delete find
 DELETE http://localhost:7070/api/v1/users/1/finds/3
+Authorization: Bearer {{token}}
 
 ### GET request to all categories
 GET http://localhost:7070/api/v1/categories
 
 ### GET request to user by id
-GET http://localhost:7070/api/v1/users/2
+GET http://localhost:7070/api/v1/users/3
+Authorization: Bearer {{token}}
 
 ### POST request to create new user
 POST http://localhost:7070/api/v1/users
 Content-Type: application/json
 
 {
-  "name": "Lars Test",
-  "email": "larstest@email.com",
-  "password": "larstester"
+  "name": "Belinda Test",
+  "email": "belindatest@email.com",
+  "password": "jegtester"
 }
+
+### POST request to login
+POST http://localhost:7070/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "belindatest@email.com",
+  "password": "jegtester"
+}
+
+> {% client.global.set("token", response.body.token); %}

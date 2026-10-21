@@ -1,5 +1,6 @@
 package app.dtos;
 
+import app.entities.Role;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,7 @@ public class UserDTO {
     private String email;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
-    private String role;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Role role;
     private LocalDate createdOn;
 }

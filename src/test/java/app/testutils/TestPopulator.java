@@ -1,9 +1,6 @@
 package app.testutils;
 
-import app.entities.Category;
-import app.entities.Find;
-import app.entities.FindSpot;
-import app.entities.User;
+import app.entities.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceException;
@@ -19,8 +16,8 @@ public class TestPopulator {
             em.getTransaction().begin();
 
             //User:
-            User katarina = new User("Katarina", "katarina@mail.dk", "kode1234", "Collector", LocalDate.of(2026, 6, 1));
-            User frederik = new User("Frederik", "frederik@mail.dk", "kode123456", "Collector", LocalDate.of(2026, 10, 2));
+            User katarina = new User("Katarina", "katarina@mail.dk", "kode1234", Role.USER, LocalDate.of(2026, 6, 1));
+            User frederik = new User("Frederik", "frederik@mail.dk", "kode123456", Role.USER, LocalDate.of(2026, 10, 2));
 
             //Category:
             Category hulsten = new Category("Hulsten");

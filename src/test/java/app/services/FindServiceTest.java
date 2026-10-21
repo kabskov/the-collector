@@ -1,9 +1,7 @@
 package app.services;
 
 import app.config.HibernateTestConfig;
-import app.daos.CategoryDAO;
 import app.daos.FindDAO;
-import app.daos.UserDAO;
 import app.dtos.FindDTO;
 import app.entities.Find;
 import app.testutils.TestData;
@@ -19,7 +17,6 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class FindServiceTest {
@@ -50,7 +47,7 @@ class FindServiceTest {
         List<Long> categoryIds = List.of(testData.categories.get(0).getId(), testData.categories.get(2).getId());
         FindDTO findDTO = new FindDTO(null, LocalDate.of(2026, 10, 4), "En ny sten", "billedeafsten", userId, categoryIds, null, null);
 
-        FindDTO returnedFindDTO = findService.registerFind(findDTO);
+        FindDTO returnedFindDTO = findService.registerFind(userId, findDTO);
 
         assertThat(returnedFindDTO.getFindId(), notNullValue());
         assertThat(returnedFindDTO.getFindSpotName(), nullValue());
@@ -65,7 +62,7 @@ class FindServiceTest {
         List<Long> categoryIds = List.of(testData.categories.get(3).getId());
         FindDTO findDTO = new FindDTO(null, LocalDate.of(2026, 10, 10), note, "billedeafstenen", userId, categoryIds, null, null);
 
-        FindDTO returnedFindDTO = findService.registerFind(findDTO);
+        FindDTO returnedFindDTO = findService.registerFind(userId, findDTO);
         Find find = findDAO.getById(returnedFindDTO.getFindId());
 
         assertThat(find, notNullValue());
@@ -80,7 +77,7 @@ class FindServiceTest {
         String findSpotKeyword = "Hillerød";
         FindDTO findDTO = new FindDTO(null, LocalDate.of(2025, 8, 17), "En sten fra Hillerød", "billedeURL", userId, categoryIds, findSpotKeyword, null);
 
-        FindDTO returnedFindDTO = findService.registerFind(findDTO);
+        FindDTO returnedFindDTO = findService.registerFind(userId, findDTO);
         Find find = findDAO.getById(returnedFindDTO.getFindId());
 
         assertThat(find.getFindSpot().getName(), containsStringIgnoringCase(findSpotKeyword));
