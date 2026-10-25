@@ -27,6 +27,7 @@ public class Routes {
         return () -> {
             path("/auth", () -> {
                 post("/login", securityController::login, Role.ANYONE);
+                get("/healthcheck", securityController::healthCheck, Role.ANYONE);
             });
             path("/categories", () -> {
                 get(categoryController::getAllCategories, Role.ANYONE);
