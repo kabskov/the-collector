@@ -14,6 +14,7 @@ import io.javalin.http.Context;
 import jakarta.persistence.EntityManagerFactory;
 
 import java.util.Date;
+import java.util.Map;
 
 public class SecurityController {
 
@@ -80,5 +81,9 @@ public class SecurityController {
         if (!ctx.routeRoles().contains(role)) {
             throw new ApiException(403, "Forbidden");
         }
+    }
+
+    public void healthCheck(Context ctx) {
+        ctx.status(200).json(Map.of("msg", "API is up and running"));
     }
 }
