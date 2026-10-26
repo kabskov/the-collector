@@ -12,12 +12,20 @@ public class ApiException extends RuntimeException {
     public ApiException(int code, String msg){
         super(msg);
         this.code = code;
-        logger.error("ApiException (code={}): {}", code, msg);
+        logException(code, msg, null);
     }
 
     public ApiException(int code, String msg, Throwable cause) {
         super(msg, cause);
         this.code = code;
-        logger.error("ApiException (code={}): {}", code, msg, cause);
+        logException(code, msg, cause);
+    }
+
+    private static void logException(int code, String msg, Throwable cause) {
+        if (code >= 500) {
+            logger.error("ApiException (code={}): {}", code, msg, cause);
+        } else {
+            logger.warn("ApiException (code={}): {}", code, msg);
+        }
     }
 }

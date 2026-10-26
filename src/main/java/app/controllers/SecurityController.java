@@ -12,6 +12,8 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import io.javalin.http.Context;
 import jakarta.persistence.EntityManagerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.Map;
@@ -20,6 +22,7 @@ public class SecurityController {
 
     private static final String ISSUER = "the-collector";
     private static final long EXPIRATION_MS = 3_600_000; // 1 time
+    private static final Logger logger = LoggerFactory.getLogger(SecurityController.class);
 
     private final UserService userService;
     private final String secret = System.getenv("SECRET_KEY");
@@ -34,6 +37,7 @@ public class SecurityController {
     public void login(Context ctx) {
         LoginDTO loginDTO = ctx.bodyAsClass(LoginDTO.class);
         UserDTO verifiedUser = userService.login(loginDTO);
+        logger.info("Login successful: userId={}", verifiedUser.getId());
         ctx.json(new TokenDTO(createToken(verifiedUser), verifiedUser.getId()));
     }
 

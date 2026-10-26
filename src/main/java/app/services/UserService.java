@@ -7,12 +7,13 @@ import app.entities.User;
 import app.exceptions.ApiException;
 import app.mappers.UserMapper;
 import jakarta.persistence.EntityManagerFactory;
-
-import java.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UserService {
 
     private final UserDAO userDAO;
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     public UserService(EntityManagerFactory emf) {
         this.userDAO = new UserDAO(emf);
@@ -35,6 +36,7 @@ public class UserService {
 
         User user = UserMapper.convertToUser(userDTO);
         userDAO.create(user);
+        logger.info("User created: id={}", user.getId());
         return UserMapper.convertToUserDTO(user);
     }
 
