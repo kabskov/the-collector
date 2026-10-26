@@ -12,11 +12,15 @@ import app.exceptions.ApiException;
 import app.mappers.FindMapper;
 import app.mappers.FindSpotMapper;
 import jakarta.persistence.EntityManagerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FindService {
+
+    private static final Logger logger = LoggerFactory.getLogger(FindService.class);
 
     private final FindSpotService findSpotService = new FindSpotService();
     private final UserDAO userDAO;
@@ -47,6 +51,7 @@ public class FindService {
         }
 
         findDAO.create(find);
+        logger.info("Find created: id={}, userId={}", find.getId(), userId);
         return FindMapper.convertToFindDTO(find);
     }
 
