@@ -2,7 +2,7 @@
 GET http://localhost:7070/
 
 ### GET request to find by id
-GET http://localhost:7070/api/v1/users/3/finds/4
+GET http://localhost:7070/api/v1/users/4/finds/6
 Authorization: Bearer {{token}}
 
 ### GET request to all finds by user id
@@ -15,9 +15,9 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "date": "2026-10-20",
-  "photoURL": "testbillede27",
-  "note": "En flot sten.",
+  "date": "2026-10-27",
+  "photoURL": "billede",
+  "note": "Denne her sten fandt jeg i skoven. Den ligner lidt et lakridsbolsje.",
   "categoryIds": [4]
 }
 
@@ -46,9 +46,9 @@ POST http://localhost:7070/api/v1/users
 Content-Type: application/json
 
 {
-  "name": "Belinda Test",
-  "email": "belindatest@email.com",
-  "password": "jegtester"
+  "name": "Test",
+  "email": "{{email}}",
+  "password": "{{password}}"
 }
 
 ### POST request to login
@@ -56,8 +56,8 @@ POST http://localhost:7070/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "belindatest@email.com",
-  "password": "jegtester"
+  "email": "{{email}}",
+  "password": "{{password}}"
 }
 
 > {% client.global.set("token", response.body.token); %}
