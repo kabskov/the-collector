@@ -30,6 +30,10 @@ public class ApplicationConfig {
             ctx.status(e.getCode());
             ctx.json(Map.of("status", e.getCode(), "msg", e.getMessage()));
         });
+        app.exception(NumberFormatException.class, (e, ctx) -> {
+            ctx.status(400);
+            ctx.json(Map.of("status", 400, "msg", "Id must be a number"));
+        });
 
         app.start(port);
         return app;
