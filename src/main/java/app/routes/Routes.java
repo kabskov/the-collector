@@ -8,6 +8,8 @@ import app.entities.Role;
 import io.javalin.apibuilder.EndpointGroup;
 import jakarta.persistence.EntityManagerFactory;
 
+import java.util.Map;
+
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class Routes {
@@ -25,6 +27,13 @@ public class Routes {
 
     public EndpointGroup getRoutes() {
         return () -> {
+            get("/", ctx -> ctx.json(Map.of(
+                    "name", "The Collector API",
+                    "version", "v1",
+                    "healthcheck", "/api/v1/auth/healthcheck",
+                    "repository", "https://github.com/kabskov/the-collector"
+            )), Role.ANYONE);
+
             path("/auth", () -> {
                 post("/login", securityController::login, Role.ANYONE);
                 get("/healthcheck", securityController::healthCheck, Role.ANYONE);
