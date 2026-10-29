@@ -16,12 +16,14 @@ public class FindSpot {
     private Long id;
 
     @NonNull
+    @Column(nullable = false)
     private double latitude;
 
     @NonNull
+    @Column(nullable = false)
     private double longitude;
 
     @NonNull
-    @Column(length = 500)
+    @Column(nullable = false, length = 500)
     private String name;
 }

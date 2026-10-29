@@ -21,7 +21,7 @@ import java.util.Map;
 public class SecurityController {
 
     private static final String ISSUER = "the-collector";
-    private static final long EXPIRATION_MS = 3_600_000; // 1 time
+    private static final long EXPIRATION_MS = 3_600_000; // 1 hour
     private static final Logger logger = LoggerFactory.getLogger(SecurityController.class);
 
     private final UserService userService;
@@ -63,7 +63,7 @@ public class SecurityController {
     }
 
     public void authenticate(Context ctx) {
-        if (ctx.routeRoles().contains(Role.ANYONE)) return; // Åbne routes.
+        if (ctx.routeRoles().contains(Role.ANYONE)) return; // Open routes.
         String header = ctx.header("Authorization");
         if (header == null || !header.startsWith("Bearer ")) {
             throw new ApiException(401, "Missing token");
@@ -80,7 +80,7 @@ public class SecurityController {
     }
 
     public void authorize(Context ctx) {
-        if (ctx.routeRoles().contains(Role.ANYONE)) return; // Åbne routes.
+        if (ctx.routeRoles().contains(Role.ANYONE)) return; // Open routes.
         Role role = ctx.attribute("role");
         if (!ctx.routeRoles().contains(role)) {
             throw new ApiException(403, "Forbidden");

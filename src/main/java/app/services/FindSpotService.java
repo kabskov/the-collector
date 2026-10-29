@@ -15,7 +15,7 @@ public class FindSpotService {
         String url = "https://nominatim.openstreetmap.org/search?q=" + encodedKeyword + "&format=json";
 
         try {
-            Thread.sleep(1000); //1 sec. delay because nominatim only allows 1 call/sec.
+            Thread.sleep(1000); //1 sec. delay because Nominatim only allows 1 call/sec.
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new ApiException(500, "Interrupted while waiting to call Nominatim", e);

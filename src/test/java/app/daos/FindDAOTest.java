@@ -12,13 +12,10 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS) //Klassen oprettes kun én gang per test og bliver ikke oprettet
-// for hver deltest/unit test.
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class FindDAOTest {
 
-    //Opretter emf med/i test-container.
     private final EntityManagerFactory emf = HibernateTestConfig.getEntityManagerFactory();
 
     private FindDAO findDAO;
@@ -30,14 +27,9 @@ class FindDAOTest {
         testData = TestPopulator.populate(emf);
     }
 
-    @AfterAll
-    void shutDown() {
-        emf.close();
-    }
-
+    //Returns a list with all finds containing the searched user id.
     @Test
     void getAllFindsByUserId() {
-        //Returnerer en liste med alle fund, der er gemt under det bruger-id, der søges på.
         Long userId = testData.users.getFirst().getId();
         List<Find> finds = findDAO.getAllFindsByUserId(userId);
 
@@ -53,13 +45,9 @@ class FindDAOTest {
         assertThat(actualFindIds, containsInAnyOrder(expectedFindIds.toArray()));
     }
 
-    @Test
-    void getUserFindsSortedByDate() {
-    }
-
+    //Returns a list with all finds containing the searched user id AND category id.
     @Test
     void getUserFindsByCategory() {
-        //Returnerer en liste med alle fund, der er gemt under det bruger-id OG kategori-id, der søges på.
         Long userId = testData.users.getFirst().getId();
         Long categoryId = testData.categories.getFirst().getId();
         List<Find> finds = findDAO.getUserFindsByCategory(userId, categoryId);
@@ -75,36 +63,12 @@ class FindDAOTest {
         assertThat(actualFindIds, containsInAnyOrder(expectedFindIds.toArray()));
     }
 
-    @Test
-    void getUserFindsByFindSpot() {
-    }
-
+    //Returns a list with all finds containing the searched user id AND date.
     @Test
     void getUserFindsByDate() {
-        //Returnerer en liste med alle fund, der er gemt under det bruger-id OG den dato, der søges på.
         Long userId = testData.users.get(1).getId();
         LocalDate date = testData.finds.get(4).getDate();
         List<Find> finds = findDAO.getUserFindsByDate(userId, date);
         assertThat(finds, hasSize(1));
-    }
-
-    @Test
-    void create() {
-    }
-
-    @Test
-    void getAll() {
-    }
-
-    @Test
-    void getById() {
-    }
-
-    @Test
-    void update() {
-    }
-
-    @Test
-    void delete() {
     }
 }

@@ -13,13 +13,13 @@ import java.util.List;
 
 public class FindDAO implements IDAO<Find, Long> {
 
-    private EntityManagerFactory emf;
+    private final EntityManagerFactory emf;
 
     public FindDAO(EntityManagerFactory emf) {
         this.emf = emf;
     }
 
-    //Alle mine fund (vist i en liste).
+    //Returns a list of finds belonging to a specific user.
     public List<Find> getAllFindsByUserId(Long userId) {
         try (EntityManager em = emf.createEntityManager()) {
 
@@ -29,7 +29,7 @@ public class FindDAO implements IDAO<Find, Long> {
         }
     }
 
-    //Fund sorteret efter dato (stigende/faldende).
+    //Returns a list of finds belonging to a specific user and sorted by date.
     public List<Find> getUserFindsSortedByDate(Long userId, boolean ascending) {
         try (EntityManager em = emf.createEntityManager()) {
 
@@ -41,7 +41,7 @@ public class FindDAO implements IDAO<Find, Long> {
         }
     }
 
-    //Alle sten i en kategori (søg på kategori).
+    //Returns a list of finds from a specific category and belonging to a specific user.
     public List<Find> getUserFindsByCategory(Long userId, Long categoryId) {
         try (EntityManager em = emf.createEntityManager()) {
 
@@ -52,7 +52,7 @@ public class FindDAO implements IDAO<Find, Long> {
         }
     }
 
-    //Alle fund fra et fundsted (søg på fundsted).
+    //Returns a list of finds from a specific find spot and belonging to a specific user.
     public List<Find> getUserFindsByFindSpot(Long userId, Long findSpotId) {
         try (EntityManager em = emf.createEntityManager()) {
 
@@ -63,7 +63,7 @@ public class FindDAO implements IDAO<Find, Long> {
         }
     }
 
-    //Alle fund fra en bestemt dato (søg på dato).
+    //Returns a list of finds from a specific date and belonging to a specific user.
     public List<Find> getUserFindsByDate(Long userId, LocalDate date) {
         try (EntityManager em = emf.createEntityManager()) {
 

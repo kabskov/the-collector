@@ -18,7 +18,7 @@ public class ApplicationConfig {
     private static Routes routes;
 
     public static void configuration(JavalinConfig config) {
-        config.router.contextPath = "/api/v1"; // Alle routes starter med dette.
+        config.router.contextPath = "/api/v1";
         config.http.defaultContentType = "application/json";
         config.router.apiBuilder(routes.getRoutes());
         ObjectMapper mapper = new ObjectMapper()
@@ -28,8 +28,9 @@ public class ApplicationConfig {
     }
 
     public static Javalin startServer(int port, EntityManagerFactory emf) {
-        routes = new Routes(emf);
         SecurityController securityController = new SecurityController(emf);
+
+        routes = new Routes(emf, securityController);
 
         Javalin app = Javalin.create(ApplicationConfig::configuration);
         app.beforeMatched(securityController::authenticate);
