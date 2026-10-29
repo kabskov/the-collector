@@ -1,28 +1,81 @@
-### GET request to index
-GET http://localhost:7070/
+# The Collector: manual API requests
+#
+# Choose an environment (dev or prod) in the dropdown next to the run button.
+# Variables (host, name, email, password) come from http-client.env.json
+# and http-client.private.env.json.
+#
+# Run "Log in" first. It saves the token and the user id for the other requests.
 
-### GET request to find by id
-GET http://localhost:7070/api/v1/users/4/finds/6
+@findId = 1
+
+
+### ---------- Open endpoints (no token needed) ----------
+
+### Index
+GET {{host}}/
+
+### Healthcheck
+GET {{host}}/auth/healthcheck
+
+### Get all categories
+GET {{host}}/categories
+
+
+### ---------- Users and login ----------
+
+### Create new user
+POST {{host}}/users
+Content-Type: application/json
+
+{
+  "name": "{{name}}",
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+### Log in (saves token and user id)
+POST {{host}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+> {%
+    client.global.set("token", response.body.token);
+    client.global.set("userId", response.body.userId);
+%}
+
+### Get user by id
+GET {{host}}/users/{{userId}}
 Authorization: Bearer {{token}}
 
-### GET request to all finds by user id
-GET http://localhost:7070/api/v1/users/4/finds
-Authorization: Bearer {{token}}
 
-### POST request to create new find
-POST http://localhost:7070/api/v1/finds
+### ---------- Finds (token needed) ----------
+
+### Create new find
+POST {{host}}/finds
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "date": "2026-10-27",
+  "date": "2026-07-12",
   "photoURL": "billede",
-  "note": "Denne her sten fandt jeg i skoven. Den ligner lidt et lakridsbolsje.",
-  "categoryIds": [4]
+  "note": "En hulsten fra Roskilde.",
+  "categoryIds": [1]
 }
 
-### PATCH request to update find
-PATCH http://localhost:7070/api/v1/users/3/finds/4
+### Get all finds by user
+GET {{host}}/users/{{userId}}/finds
+Authorization: Bearer {{token}}
+
+### Get find by id
+GET {{host}}/users/{{userId}}/finds/{{findId}}
+Authorization: Bearer {{token}}
+
+### Update find (only the fields you send are changed)
+PATCH {{host}}/users/{{userId}}/finds/{{findId}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -30,37 +83,6 @@ Content-Type: application/json
   "note": "DET HER ER EN FLOT STEN!"
 }
 
-### DELETE request to delete find
-DELETE http://localhost:7070/api/v1/users/1/finds/3
+### Delete find
+DELETE {{host}}/users/{{userId}}/finds/{{findId}}
 Authorization: Bearer {{token}}
-
-### GET request to all categories
-GET http://localhost:7070/api/v1/categories
-
-### GET request to user by id
-GET http://localhost:7070/api/v1/users/3
-Authorization: Bearer {{token}}
-
-### POST request to create new user
-POST http://localhost:7070/api/v1/users
-Content-Type: application/json
-
-{
-  "name": "Test",
-  "email": "{{email}}",
-  "password": "{{password}}"
-}
-
-### POST request to login
-POST http://localhost:7070/api/v1/auth/login
-Content-Type: application/json
-
-{
-  "email": "{{email}}",
-  "password": "{{password}}"
-}
-
-> {% client.global.set("token", response.body.token); %}
-
-### GET request healthcheck
-GET http://localhost:7070/api/v1/auth/healthcheck
