@@ -17,5 +17,6 @@ public class Category {
 
     @Setter
     @NonNull
+    @Column(nullable = false)
     private String name;
 }

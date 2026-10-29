@@ -3,7 +3,6 @@ package app.services;
 import app.exceptions.ApiException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -12,8 +11,7 @@ import java.net.http.HttpResponse;
 
 public class APIService {
 
-    private final ObjectMapper objectMapper = new ObjectMapper()
-            .registerModule(new JavaTimeModule()); //TODO behøver måske ikke lige at have det her modul med...
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public String readAPI(String url) {
         try {

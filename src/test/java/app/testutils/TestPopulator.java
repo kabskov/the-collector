@@ -16,8 +16,10 @@ public class TestPopulator {
             em.getTransaction().begin();
 
             //User:
-            User katarina = new User("Katarina", "katarina@mail.dk", "test1234", Role.USER, LocalDate.of(2026, 6, 1));
-            User frederik = new User("Frederik", "frederik@mail.dk", "test1234", Role.USER, LocalDate.of(2026, 10, 2));
+            User katarina = new User("Katarina", "katarina@mail.dk", "test1234", Role.USER,
+                    LocalDate.of(2026, 6, 1));
+            User frederik = new User("Frederik", "frederik@mail.dk", "test1234", Role.USER,
+                    LocalDate.of(2026, 10, 2));
 
             //Category:
             Category hulsten = new Category("Hulsten");
@@ -32,27 +34,32 @@ public class TestPopulator {
             FindSpot roskilde = new FindSpot(55.6415, 12.0803, "Roskilde, Danmark");
 
             //Find:
-            Find find1 = new Find(LocalDate.of(2026, 6, 20), "billede1", "Mit første fund.", katarina);
+            Find find1 = new Find(LocalDate.of(2026, 6, 20), "billede1",
+                    "Mit første fund.", katarina);
             find1.addCategory(pæneSten);
             find1.setFindSpot(karrebæksminde);
 
-            Find find2 = new Find(LocalDate.of(2026, 7, 15), "billede2", "En flot hulsten!", katarina);
+            Find find2 = new Find(LocalDate.of(2026, 7, 15), "billede2",
+                    "En flot hulsten!", katarina);
             find2.addCategory(hulsten);
             find2.addCategory(pæneSten);
             find2.setFindSpot(roskilde);
 
-            Find find3 = new Find(LocalDate.of(2026, 7, 15), "billede3", "Et flot stykke havglas", katarina);
+            Find find3 = new Find(LocalDate.of(2026, 7, 15), "billede3",
+                    "Et flot stykke havglas", katarina);
             find3.addCategory(havglas);
             find3.setFindSpot(roskilde);
 
-            Find find4 = new Find(LocalDate.of(2026, 8, 23), "billede4", "Jeg kan ikke huske, hvor jeg fandt denne her hulsten.", katarina);
+            Find find4 = new Find(LocalDate.of(2026, 8, 23), "billede4",
+                    "Jeg kan ikke huske, hvor jeg fandt denne her hulsten.", katarina);
             find4.addCategory(hulsten);
 
-            Find find5 = new Find(LocalDate.of(2026, 7, 15), "billede5", "...", frederik);
+            Find find5 = new Find(LocalDate.of(2026, 7, 15), "billede5",
+                    "...", frederik);
             find5.addCategory(slåsmutsten);
             find5.setFindSpot(roskilde);
 
-            //Lister til TestData:
+            //Lists for TestData:
             List<User> users = List.of(katarina, frederik);
             List<Category> categories = List.of(hulsten, slåsmutsten, havglas, pæneSten);
             List<FindSpot> findSpots = List.of(helsingør, karrebæksminde, birkerød, roskilde);
@@ -65,11 +72,6 @@ public class TestPopulator {
             testData.finds = finds;
 
             try {
-                //TRUNCATE TABLE tømmer tabellerne, der står efter.
-                //RESTART IDENTITY nulstiller autogenereret id.
-                //CASCADE tømmer alle tabeller, der har en fremmednøgle-reference til tabellerne, der står efter TRUNCATE.
-                //Jeg har en join-tabel mellem finds og categories, som ikke er med her. CASCADE løser det, fordi join-tabellen
-                //indeholder fremmednøgler til både finds og categories.
                 em.createNativeQuery("TRUNCATE TABLE users, categories, find_spots, finds RESTART IDENTITY CASCADE").executeUpdate();
 
                 em.persist(katarina);

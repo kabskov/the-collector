@@ -15,7 +15,8 @@ public class UserRoutesTest extends RouteTestBase {
     //User story 1:
     //As a rock collector, I want to create an account, so I can register my finds.
 
-    //Given I do not have an account, when I create a user with name, email and password, then I get 201 and my details without the password.
+    //Given I do not have an account, when I create a user with name, email and password, then I get 201 and my
+    // details without the password.
     @Test
     void createUserWithCorrectCredentials() {
         given()

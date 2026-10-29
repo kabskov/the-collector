@@ -35,19 +35,12 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Setter
     @Column(nullable = false)
     private LocalDate createdOn;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Set<Find> finds = new HashSet<>();
-
-    public void addFind(Find find) {
-        if (find != null) {
-            this.finds.add(find);
-            find.setUser(this);
-        }
-    }
 
     public User(String name, String email, String password, Role role, LocalDate createdOn) {
         this.name = name;

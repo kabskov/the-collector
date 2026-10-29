@@ -16,11 +16,11 @@ public class Routes {
     private final UserController userController;
     private final SecurityController securityController;
 
-    public Routes(EntityManagerFactory emf) {
+    public Routes(EntityManagerFactory emf, SecurityController securityController) {
         this.findController = new FindController(emf);
         this.categoryController = new CategoryController(emf);
         this.userController = new UserController(emf);
-        this.securityController = new SecurityController(emf);
+        this.securityController = securityController;
     }
 
     public EndpointGroup getRoutes() {

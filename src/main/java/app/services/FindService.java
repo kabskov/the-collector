@@ -74,7 +74,7 @@ public class FindService {
     }
 
     public FindDTO updateFind(Long userId, Long findId, FindDTO findDTO) {
-        //Tjekker, om fundet tilhører brugeren. Hvis ikke -> 404.
+        //Checks whether the find belongs to the user. If not -> 404.
         getFindByIdAndUserId(userId, findId);
         Find find = findDAO.getById(findId);
         if (findDTO.getDate() != null) {

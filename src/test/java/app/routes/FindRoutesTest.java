@@ -17,7 +17,8 @@ public class FindRoutesTest extends RouteTestBase {
     //User story 3:
     //As a rock collector, I want to register a find, so I can keep track of what I have found.
 
-    //Given I am logged in, when I register a find with date, photo URL and at least one category, then I get 201 and the find is linked to me.
+    //Given I am logged in, when I register a find with date, photo URL and at least one category, then I get 201 and
+    // the find is linked to me.
     @Test
     void registerFindWhenLoggedIn() {
         String token = login("katarina@mail.dk");
@@ -25,7 +26,8 @@ public class FindRoutesTest extends RouteTestBase {
         given()
                 .header("Authorization", "Bearer " + token)
                 .contentType(ContentType.JSON)
-                .body(Map.of("date", "2026-10-10", "photoURL", "url", "categoryIds", List.of(testData.categories.get(2).getId())))
+                .body(Map.of("date", "2026-10-10", "photoURL", "url", "categoryIds",
+                        List.of(testData.categories.get(2).getId())))
                 .when()
                 .post("/finds")
                 .then()
@@ -38,7 +40,8 @@ public class FindRoutesTest extends RouteTestBase {
     void registerFindWithoutLogin() {
         given()
                 .contentType(ContentType.JSON)
-                .body(Map.of("date", "2026-10-10", "photoURL", "url", "categoryIds", List.of(testData.categories.get(2).getId())))
+                .body(Map.of("date", "2026-10-10", "photoURL", "url", "categoryIds",
+                        List.of(testData.categories.get(2).getId())))
                 .when()
                 .post("/finds")
                 .then()
@@ -257,7 +260,8 @@ public class FindRoutesTest extends RouteTestBase {
     //User story 8:
     //As a rock collector, I want to add a find spot to my find, so I can see where I made my finds.
 
-    //Given I am logged in, when I register a find with a find spot keyword, then the name of the place is shown as findSpotName in the response.
+    //Given I am logged in, when I register a find with a find spot keyword, then the name of the place is shown as
+    // findSpotName in the response.
     //This test has call to nominatim and is excluded from automated build.
     @Tag("external")
     @Test
@@ -268,7 +272,8 @@ public class FindRoutesTest extends RouteTestBase {
         given()
                 .header("Authorization", "Bearer " + token)
                 .contentType(ContentType.JSON)
-                .body(Map.of("date", "2026-10-10", "photoURL", "url", "categoryIds", List.of(testData.categories.getFirst().getId()), "findSpotKeyword", findSpot))
+                .body(Map.of("date", "2026-10-10", "photoURL", "url", "categoryIds",
+                        List.of(testData.categories.getFirst().getId()), "findSpotKeyword", findSpot))
                 .when()
                 .post("/finds")
                 .then()
@@ -284,7 +289,8 @@ public class FindRoutesTest extends RouteTestBase {
         given()
                 .header("Authorization", "Bearer " + token)
                 .contentType(ContentType.JSON)
-                .body(Map.of("date", "2026-10-10", "photoURL", "url", "categoryIds", List.of(testData.categories.getFirst().getId())))
+                .body(Map.of("date", "2026-10-10", "photoURL", "url", "categoryIds",
+                        List.of(testData.categories.getFirst().getId())))
                 .when()
                 .post("/finds")
                 .then()
@@ -303,7 +309,8 @@ public class FindRoutesTest extends RouteTestBase {
         given()
                 .header("Authorization", "Bearer " + token)
                 .contentType(ContentType.JSON)
-                .body(Map.of("date", "2026-10-10", "photoURL", "url", "categoryIds", List.of(testData.categories.get(2).getId()), "findSpotKeyword", findSpot))
+                .body(Map.of("date", "2026-10-10", "photoURL", "url", "categoryIds",
+                        List.of(testData.categories.get(2).getId()), "findSpotKeyword", findSpot))
                 .when()
                 .post("/finds")
                 .then()
@@ -359,7 +366,8 @@ public class FindRoutesTest extends RouteTestBase {
         given()
                 .header("Authorization", "Bearer " + token)
                 .contentType(ContentType.JSON)
-                .body(Map.of("date", "2026-10-10", "photoURL", "url", "categoryIds", List.of(testData.categories.get(2).getId())))
+                .body(Map.of("date", "2026-10-10", "photoURL", "url", "categoryIds",
+                        List.of(testData.categories.get(2).getId())))
                 .when()
                 .post("/finds")
                 .then()

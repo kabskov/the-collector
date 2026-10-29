@@ -9,7 +9,7 @@ import java.util.List;
 
 public class CategoryDAO implements IDAO<Category, Long> {
 
-    private EntityManagerFactory emf;
+    private final EntityManagerFactory emf;
 
     public CategoryDAO(EntityManagerFactory emf) {
         this.emf = emf;

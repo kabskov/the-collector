@@ -11,7 +11,7 @@ import java.util.List;
 
 public class UserDAO implements IDAO<User, Long> {
 
-    private EntityManagerFactory emf;
+    private final EntityManagerFactory emf;
 
     public UserDAO(EntityManagerFactory emf) {
         this.emf = emf;
