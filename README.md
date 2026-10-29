@@ -249,7 +249,7 @@ When creating a user, send `name`, `email` and `password`. The role is always se
 }
 ```
 
-- **POST /finds:** `date` is required and must be written as `yyyy-MM-dd`, for example `2026-07-12`, `photoURL` and at least one id in `categoryIds` are also required. `note` and `findSpotKeyword` are optional. The user id comes from the token. `findId` and `findSpotName` are set by the server.
+- **POST /finds:** `date` is required and must be written as `yyyy-MM-dd`, for example `2026-07-12`. `photoURL` and at least one id in `categoryIds` are also required. `note` and `findSpotKeyword` are optional. The user id comes from the token. `findId` and `findSpotName` are set by the server.
 - **PATCH:** All fields are optional, and only the fields that are sent are changed. If `categoryIds` is sent, it replaces the old list and must not be empty. The find spot cannot be changed after the find has been created.
 - **Responses:** `findSpotName` is `null` if the find has no find spot, `note` is an empty string if no note was given, and `findSpotKeyword` is always `null`.
 
