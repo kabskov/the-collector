@@ -20,6 +20,7 @@
         <logback-classic>1.5.27</logback-classic>
         <org.slf4j>2.0.17</org.slf4j>
         <hamcrest>3.0</hamcrest>
+        <rest-assured.version>6.0.1</rest-assured.version>
         <jbcrypt.version>0.4</jbcrypt.version>
     </properties>
 
@@ -140,12 +141,20 @@
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers-jdbc</artifactId>
             <version>${testcontainers.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers-junit-jupiter</artifactId>
             <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>${rest-assured.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -223,6 +232,12 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0</version>
+                <configuration>
+                    <excludedGroups>external</excludedGroups>
+                    <environmentVariables>
+                        <SECRET_KEY>test-secret-key-that-is-long-enough-for-hmac256</SECRET_KEY>
+                    </environmentVariables>
+                </configuration>
             </plugin>
         </plugins>
     </build>

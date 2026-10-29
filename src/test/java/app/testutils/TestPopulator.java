@@ -16,8 +16,8 @@ public class TestPopulator {
             em.getTransaction().begin();
 
             //User:
-            User katarina = new User("Katarina", "katarina@mail.dk", "kode1234", Role.USER, LocalDate.of(2026, 6, 1));
-            User frederik = new User("Frederik", "frederik@mail.dk", "kode123456", Role.USER, LocalDate.of(2026, 10, 2));
+            User katarina = new User("Katarina", "katarina@mail.dk", "test1234", Role.USER, LocalDate.of(2026, 6, 1));
+            User frederik = new User("Frederik", "frederik@mail.dk", "test1234", Role.USER, LocalDate.of(2026, 10, 2));
 
             //Category:
             Category hulsten = new Category("Hulsten");

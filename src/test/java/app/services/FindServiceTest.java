@@ -7,10 +7,7 @@ import app.entities.Find;
 import app.testutils.TestData;
 import app.testutils.TestPopulator;
 import jakarta.persistence.EntityManagerFactory;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -70,6 +67,8 @@ class FindServiceTest {
     }
 
     //Med søgeord og kald til Nominatim (kun i denne ene test på grund af Nominatim-restriktioner).
+    //This test has call to nominatim and is excluded from automated build.
+    @Tag("external")
     @Test
     void registerFindWithFindSpotFromNominatim() {
         Long userId = testData.users.getLast().getId();

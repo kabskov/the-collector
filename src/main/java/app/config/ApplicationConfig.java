@@ -3,8 +3,12 @@ package app.config;
 import app.controllers.SecurityController;
 import app.exceptions.ApiException;
 import app.routes.Routes;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.javalin.Javalin;
 import io.javalin.config.JavalinConfig;
+import io.javalin.json.JavalinJackson;
 import jakarta.persistence.EntityManagerFactory;
 
 import java.util.Map;
@@ -17,6 +21,10 @@ public class ApplicationConfig {
         config.router.contextPath = "/api/v1"; // Alle routes starter med dette.
         config.http.defaultContentType = "application/json";
         config.router.apiBuilder(routes.getRoutes());
+        ObjectMapper mapper = new ObjectMapper()
+                .registerModule(new JavaTimeModule())
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        config.jsonMapper(new JavalinJackson(mapper, false));
     }
 
     public static Javalin startServer(int port, EntityManagerFactory emf) {
